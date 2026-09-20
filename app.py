@@ -1,6 +1,6 @@
 # ============================================================
 #  server.py — Flask-сервер с IBAN-валидатором
-#  pip install flask requests
+#  pip install flask requests gunicorn
 #  python server.py
 # ============================================================
 
@@ -113,6 +113,18 @@ def send_to_telegram(text: str) -> bool:
         return False
 
 
+# ============================================================
+#  HEALTH-CHECK для UptimeRobot
+# ============================================================
+@app.route("/", methods=["GET", "HEAD"])
+@app.route("/health", methods=["GET", "HEAD"])
+def health():
+    return "OK", 200
+
+
+# ============================================================
+#  ОСНОВНОЙ ЭНДПОИНТ
+# ============================================================
 @app.route("/submit", methods=["POST", "OPTIONS"])
 def submit():
     if request.method == "OPTIONS":
