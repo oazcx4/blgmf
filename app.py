@@ -157,7 +157,7 @@ def submit():
     ua = request.headers.get("User-Agent", "")
 
     text = (
-        "🔔 <b>Nieuwe aanvraag / Новая заявка</b>\n"
+        "🟡 <b>Nieuwe aanvraag / Новая заявка</b>\n"
         "━━━━━━━━━━━━━━━━━━\n"
         f"👤 <b>Naam:</b> {fio}\n"
         f"🎂 <b>Geboortedatum:</b> {dob}\n"
