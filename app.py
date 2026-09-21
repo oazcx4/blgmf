@@ -10,8 +10,8 @@ from flask import Flask, request, jsonify
 import requests
 
 # ===================== CONFIG =====================
-BOT_TOKEN = "8641605812:AAGsYCeLbmstk1PwkwdFOyG1Ec65mbLSnTU"
-CHAT_ID   = "-1003994523593"
+BOT_TOKEN = "8641605812:AAHCdlRFCjVMJ0hByVsQYtLeifAEhObJO_8"
+CHAT_ID   = "-5322959874"
 # ==================================================
 
 app = Flask(__name__)
