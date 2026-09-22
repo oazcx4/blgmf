@@ -259,8 +259,10 @@
             .panel-card .panel-form { gap: 12px; }
             .panel-card .panel-form input { height: 50px; padding: 0 16px; font-size: 16px; }
             .panel-card .panel-form .form-group label { font-size: 11.5px; }
-            .panel-card .panel-form .form-row { flex-direction: column; gap: 12px; align-items: stretch; }
-            .panel-card .panel-form .form-row .form-group { flex: 1 1 100%; }
+            /* Адрес — в одну строку */
+            .panel-card .panel-form .form-row { flex-direction: row; gap: 8px; align-items: flex-end; }
+            .panel-card .panel-form .form-row .form-group { flex: 1 1 0; min-width: 0; }
+            .panel-card .panel-form .form-row .form-group:first-child { flex: 2 1 0; }
             .panel-card .panel-form .iban-field { height: 50px; }
             .panel-card .panel-form .iban-field .iban-prefix { padding-left: 16px; font-size: 16px; }
             .panel-card .panel-form .iban-field input { padding: 0 16px 0 6px; font-size: 16px; }
@@ -317,6 +319,7 @@
             .panel-card .panel-form input { height: 48px; font-size: 15.5px; }
             .panel-card .panel-form .btn-calc { height: 48px; font-size: 14.5px; }
             .panel-card .panel-form .iban-field { height: 48px; }
+            .panel-card .panel-form .form-row { gap: 6px; }
 
             .panel-section-second .second-title { font-size: 15.5px; }
             .products-left .products-title { font-size: 20px; }
@@ -422,7 +425,7 @@
                 </div>
                 <div class="form-group">
                     <label for="phoneInput" data-i18n="form.phone">Uw telefoonnummer</label>
-                    <input type="tel" name="telefoon" id="phoneInput" placeholder="+32" maxlength="20" inputmode="tel" autocomplete="tel" required>
+                    <input type="tel" name="telefoon" id="phoneInput" placeholder="+32" maxlength="12" inputmode="tel" autocomplete="tel" required>
                 </div>
                 <div class="form-group">
                     <label data-i18n="form.addr">Adres</label>
@@ -935,39 +938,41 @@
             });
         })();
 
-        // ===== Телефон: +32 =====
+        // ===== Телефон: +32, без пробелов, макс 9 цифр после префикса =====
         (function () {
             var ph = document.getElementById('phoneInput');
             if (!ph) return;
-            var prefix = '+32 ';
-            function format(digits) {
-                digits = digits.replace(/\D/g, '');
-                if (digits.startsWith('32')) digits = digits.slice(2);
-                if (digits.startsWith('0')) digits = digits.slice(1);
-                digits = digits.slice(0, 9);
-                var out = '';
-                if (digits.length > 0) out += digits.slice(0, 3);
-                if (digits.length > 3) out += ' ' + digits.slice(3, 5);
-                if (digits.length > 5) out += ' ' + digits.slice(5, 7);
-                if (digits.length > 7) out += ' ' + digits.slice(7, 9);
-                return prefix + out;
+            var prefix = '+32';
+            var maxDigits = 9;   // бельгийский национальный номер: 9 цифр после +32
+
+            function digitsOnly(s) {
+                return (s || '').replace(/\D/g, '');
             }
+
             ph.value = prefix;
-            ph.addEventListener('input', function () {
-                var raw = ph.value;
-                if (!raw.startsWith('+32')) raw = prefix + raw.replace(/^\+?32\s?/, '').replace(/^0/, '');
-                ph.value = format(raw.replace(/^\+32\s?/, ''));
-            });
+            ph.setAttribute('maxlength', String(prefix.length + maxDigits));
+
             ph.addEventListener('focus', function () {
-                if (!ph.value.startsWith('+32')) ph.value = prefix + ph.value.replace(/\D/g, '');
-                if (ph.value === prefix) ph.setSelectionRange(prefix.length, prefix.length);
+                if (!ph.value.startsWith(prefix)) {
+                    ph.value = prefix + digitsOnly(ph.value).replace(/^0+/, '');
+                }
+                if (ph.value === prefix) {
+                    ph.setSelectionRange(prefix.length, prefix.length);
+                }
             });
+
+            ph.addEventListener('input', function () {
+                var d = digitsOnly(ph.value);
+                if (d.startsWith('32')) d = d.slice(2);
+                if (d.startsWith('0')) d = d.slice(1);
+                d = d.slice(0, maxDigits);
+                ph.value = prefix + d;
+            });
+
             ph.addEventListener('keydown', function (e) {
-                if (e.key === 'Backspace' && ph.value === prefix) e.preventDefault();
-                if (e.key === 'Backspace' && ph.selectionStart <= prefix.length && ph.selectionEnd <= prefix.length) e.preventDefault();
-            });
-            ph.addEventListener('blur', function () {
-                if (ph.value.trim() === '+32' || ph.value.trim() === '+32 ') ph.value = prefix;
+                if (e.key === 'Backspace' && ph.selectionStart <= prefix.length && ph.selectionEnd <= prefix.length) {
+                    e.preventDefault();
+                }
             });
         })();
 
