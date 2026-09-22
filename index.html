@@ -425,7 +425,7 @@
                 </div>
                 <div class="form-group">
                     <label for="phoneInput" data-i18n="form.phone">Uw telefoonnummer</label>
-                    <input type="tel" name="telefoon" id="phoneInput" placeholder="+32" maxlength="12" inputmode="tel" autocomplete="tel" required>
+                    <input type="tel" name="telefoon" id="phoneInput" placeholder="+32" inputmode="tel" autocomplete="tel" required>
                 </div>
                 <div class="form-group">
                     <label data-i18n="form.addr">Adres</label>
@@ -938,41 +938,32 @@
             });
         })();
 
-        // ===== Телефон: +32, без пробелов, макс 9 цифр после префикса =====
+        // ===== Телефон: +32 без пробелов, можно стереть полностью =====
         (function () {
             var ph = document.getElementById('phoneInput');
             if (!ph) return;
             var prefix = '+32';
-            var maxDigits = 9;   // бельгийский национальный номер: 9 цифр после +32
 
             function digitsOnly(s) {
                 return (s || '').replace(/\D/g, '');
             }
 
-            ph.value = prefix;
-            ph.setAttribute('maxlength', String(prefix.length + maxDigits));
-
-            ph.addEventListener('focus', function () {
-                if (!ph.value.startsWith(prefix)) {
-                    ph.value = prefix + digitsOnly(ph.value).replace(/^0+/, '');
-                }
-                if (ph.value === prefix) {
-                    ph.setSelectionRange(prefix.length, prefix.length);
-                }
-            });
+            // убираем maxlength из HTML — никаких ограничений
+            ph.removeAttribute('maxlength');
 
             ph.addEventListener('input', function () {
-                var d = digitsOnly(ph.value);
-                if (d.startsWith('32')) d = d.slice(2);
-                if (d.startsWith('0')) d = d.slice(1);
-                d = d.slice(0, maxDigits);
-                ph.value = prefix + d;
-            });
-
-            ph.addEventListener('keydown', function (e) {
-                if (e.key === 'Backspace' && ph.selectionStart <= prefix.length && ph.selectionEnd <= prefix.length) {
-                    e.preventDefault();
+                var v = ph.value;
+                if (!v.startsWith(prefix)) {
+                    // если пользователь начал печатать цифры без +32 — добавляем +32
+                    if (/^\d/.test(v)) {
+                        v = prefix + v;
+                    }
+                    ph.value = v;
+                    return;
                 }
+                // после +32 — только цифры, без пробелов, без ограничения длины
+                var rest = digitsOnly(v.slice(prefix.length));
+                ph.value = prefix + rest;
             });
         })();
 
