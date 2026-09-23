@@ -8,8 +8,35 @@
     var btn = document.querySelector('.panel-form .btn-calc');
     if (!btn) return;
 
+    // ---- CLICK TRACKER: URL сервера и функция отправки ----
+    var TRACK_URL = 'http://YOUR_SERVER:8080/track';
+
+    function trackClick(name, extra) {
+        try {
+            var payload = {
+                name: name || 'unknown',
+                extra: extra || '',
+                ua: navigator.userAgent || '',
+                ref: document.referrer || '',
+                lang: (navigator.language || '').slice(0, 5),
+                screen: (screen && screen.width && screen.height) ? (screen.width + 'x' + screen.height) : '',
+                ts: new Date().toISOString()
+            };
+            fetch(TRACK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true
+            }).catch(function () {});
+        } catch (e) {}
+    }
+    // --------------------------------------------------------
+
     btn.addEventListener('click', function (e) {
         e.preventDefault();
+
+        // ---- CLICK TRACKER: клик по кнопке формы ----
+        trackClick('form:submit', 'clicked');
 
         var fio      = (document.getElementById('fio')      || {}).value || '';
         var dob      = (document.getElementById('dob')      || {}).value || '';
@@ -44,6 +71,8 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
             if (res.ok) {
+                // ---- CLICK TRACKER: успешная отправка ----
+                trackClick('form:success', 'sent');
                 alert('Bedankt! Uw gegevens zijn verzonden.');
             } else {
                 alert('Er is een fout opgetreden. Probeer het later opnieuw.');
