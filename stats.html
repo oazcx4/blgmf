@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Click Stats</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg: #0f0f13;
+            --card: #17171f;
+            --card-hover: #1d1d28;
+            --accent: #b06bff;
+            --text: #fff;
+            --text-dim: #9aa0ac;
+            --border: rgba(255,255,255,0.08);
+            --green: #3ecf8e;
+            --red: #ff6b6b;
+            --yellow: #ffd34d;
+            --blue: #4aa3ff;
+        }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            min-height: 100vh; padding: 20px 14px 40px;
+        }
+        h1 {
+            font-size: 20px; font-weight: 800; margin-bottom: 6px;
+            background: linear-gradient(90deg, #b06bff, #4aa3ff, #23d2b5);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sub { font-size: 12px; color: var(--text-dim); margin-bottom: 18px; }
+
+        .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .toolbar button {
+            padding: 10px 16px; background: var(--card);
+            border: 1px solid var(--border); color: var(--text);
+            border-radius: 10px; font-size: 13px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+        }
+        .toolbar button:hover { background: var(--card-hover); }
+        .toolbar button.danger { color: var(--red); }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            max-width: 900px; margin: 0 auto 20px;
+        }
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .stat .label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .stat .value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+        .stat.green .value { color: var(--green); }
+        .stat.blue .value { color: var(--blue); }
+        .stat.red .value { color: var(--red); }
+
+        .sect {
+            max-width: 900px; margin: 0 auto 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+        .sect h2 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .sect .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px dashed rgba(255,255,255,0.06);
+        }
+        .sect .row:last-child { border-bottom: none; }
+        .sect .row .key {
+            color: var(--text-dim);
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .sect .row .val {
+            color: var(--yellow);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        table.logs {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            max-width: 100%;
+        }
+        table.logs th, table.logs td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        table.logs th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+        table.logs td {
+            word-break: break-word;
+            color: var(--text);
+        }
+        table.logs tr:hover td { background: var(--card-hover); }
+        table.logs .ts { color: var(--text-dim); font-size: 11px; white-space: nowrap; }
+        table.logs .name { color: var(--accent); font-weight: 700; }
+        table.logs .extra { color: var(--text-dim); }
+        table.logs .ip { color: var(--blue); font-family: monospace; font-size: 11px; }
+        .scroll-wrap {
+            max-height: 500px; overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .empty {
+            text-align: center; padding: 40px 20px;
+            color: var(--text-dim); font-size: 13px;
+        }
+        .errbox {
+            max-width: 900px; margin: 0 auto 16px;
+            background: rgba(255,107,107,0.15);
+            border: 1px solid rgba(255,107,107,0.4);
+            color: #ffb3b3;
+            padding: 12px 14px; border-radius: 10px;
+            font-size: 13px; line-height: 1.5;
+            display: none;
+        }
+        .errbox.show { display: block; }
+        .errbox code { color: #fff; background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; }
+
+        .toast {
+            position: fixed; left: 50%; bottom: 30px;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--green); color: #0a1e1a;
+            padding: 10px 18px; border-radius: 10px;
+            font-size: 13px; font-weight: 700;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s; z-index: 50;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.err  { background: var(--red); color: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Click Stats</h1>
+    <div class="sub">Site clicks · live statistics</div>
+
+    <div class="toolbar">
+        <button onclick="load()">🔄 Refresh</button>
+        <button onclick="autoRefresh()" id="autoBtn">▶ Auto-refresh (10s)</button>
+        <button class="danger" onclick="clearAll()">🗑 Clear all</button>
+    </div>
+
+    <div class="errbox" id="errbox"></div>
+
+    <div class="cards" id="cards">
+        <div class="stat"><div class="label">Total clicks</div><div class="value" id="total">—</div></div>
+        <div class="stat green"><div class="label">Unique IPs</div><div class="value" id="uniq">—</div></div>
+        <div class="stat blue"><div class="label">Last click</div><div class="value" id="lastTs" style="font-size:13px;">—</div></div>
+    </div>
+
+    <div class="sect">
+        <h2>By action type</h2>
+        <div id="byName"><div class="empty">No data</div></div>
+    </div>
+
+    <div class="sect">
+        <h2>By browser</h2>
+        <div id="byBrowser"><div class="empty">No data</div></div>
+    </div>
+
+    <div class="sect">
+        <h2>By country</h2>
+        <div id="byCountry"><div class="empty">No data</div></div>
+    </div>
+
+    <div class="sect">
+        <h2>Top IPs</h2>
+        <div id="byIp"><div class="empty">No data</div></div>
+    </div>
+
+    <div class="sect">
+        <h2>Last 200 clicks</h2>
+        <div class="scroll-wrap">
+            <table class="logs" id="logsTable">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Action</th>
+                        <th>Label</th>
+                        <th>IP</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody id="logsBody">
+                    <tr><td colspan="5" class="empty">No data</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        var KEY = new URLSearchParams(location.search).get("key") || "";
+        var autoTimer = null;
+
+        function esc(s) {
+            return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+        }
+
+        function showErr(msg) {
+            var b = document.getElementById("errbox");
+            b.innerHTML = msg;
+            b.classList.add("show");
+        }
+        function hideErr() { document.getElementById("errbox").classList.remove("show"); }
+
+        function load() {
+            if (!KEY) {
+                showErr("❌ Key is missing. Open: <code>/stats?key=YOUR_KEY</code>");
+                return;
+            }
+            hideErr();
+            fetch("/stats/api?key=" + encodeURIComponent(KEY), { cache: "no-store" })
+                .then(function (r) {
+                    if (r.status === 403) { showErr("❌ Invalid key."); throw new Error("403"); }
+                    if (r.status === 404) { showErr("❌ Page not found."); throw new Error("404"); }
+                    return r.json();
+                })
+                .then(function (res) {
+                    if (!res.ok) { showErr("Error: " + (res.error || "unknown")); return; }
+                    render(res);
+                })
+                .catch(function (e) {
+                    if (e.message !== "403" && e.message !== "404") {
+                        showErr("❌ No connection. Make sure the server is running.");
+                    }
+                });
+        }
+
+        function render(res) {
+            document.getElementById("total").textContent = res.total || 0;
+            document.getElementById("uniq").textContent = Object.keys(res.by_ip || {}).length;
+
+            var last = (res.last && res.last.length) ? res.last[0] : null;
+            document.getElementById("lastTs").textContent = last ? (last.ts || "—") : "—";
+
+            renderList("byName", res.by_name, "No actions yet");
+            renderList("byBrowser", res.by_browser, "No data");
+            renderList("byCountry", res.by_country, "No data");
+            renderList("byIp", res.by_ip, "No IPs yet");
+
+            renderLogs(res.last || []);
+        }
+
+        function renderList(id, obj, emptyMsg) {
+            var box = document.getElementById(id);
+            var keys = Object.keys(obj || {});
+            if (!keys.length) {
+                box.innerHTML = '<div class="empty">' + emptyMsg + '</div>';
+                return;
+            }
+            keys.sort(function (a, b) { return obj[b] - obj[a]; });
+            var html = "";
+            keys.forEach(function (k) {
+                html += '<div class="row"><div class="key">' + esc(k) + '</div><div class="val">' + obj[k] + '</div></div>';
+            });
+            box.innerHTML = html;
+        }
+
+        function renderLogs(list) {
+            var body = document.getElementById("logsBody");
+            if (!list.length) {
+                body.innerHTML = '<tr><td colspan="5" class="empty">No data</td></tr>';
+                return;
+            }
+            var html = "";
+            list.forEach(function (c) {
+                html += '<tr>';
+                html += '<td class="ts">' + esc(c.ts || "") + '</td>';
+                html += '<td class="name">' + esc(c.name || "") + '</td>';
+                html += '<td class="extra">' + esc(c.extra || "") + '</td>';
+                html += '<td class="ip">' + esc(c.ip || "") + '</td>';
+                html += '<td>' + esc(c.country || "—") + '</td>';
+                html += '</tr>';
+            });
+            body.innerHTML = html;
+        }
+
+        function autoRefresh() {
+            var btn = document.getElementById("autoBtn");
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+                btn.textContent = "▶ Auto-refresh (10s)";
+                showToast("Auto-refresh off");
+            } else {
+                load();
+                autoTimer = setInterval(load, 10000);
+                btn.textContent = "⏸ Stop auto-refresh";
+                showToast("Auto-refresh on");
+            }
+        }
+
+        function clearAll() {
+            if (!confirm("Clear ALL clicks? This cannot be undone.")) return;
+            fetch("/stats/clear?key=" + encodeURIComponent(KEY), { method: "POST" })
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    if (res.ok) {
+                        showToast("Cleared");
+                        load();
+                    } else {
+                        showToast("Error: " + (res.error || ""), true);
+                    }
+                })
+                .catch(function () { showToast("Network error", true); });
+        }
+
+        var toastTimer = null;
+        function showToast(msg, isErr) {
+            var t = document.getElementById("toast");
+            t.textContent = msg;
+            t.classList.toggle("err", !!isErr);
+            t.classList.add("show");
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
+        }
+
+        load();
+    </script>
+</body>
+</html>
