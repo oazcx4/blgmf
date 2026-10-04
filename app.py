@@ -13,7 +13,7 @@ from flask import Flask, request, jsonify, send_from_directory
 import requests
 
 # ===================== CONFIG =====================
-BOT_TOKEN = "8641605812:AAHCdlRFCjVMJ0hByVsQYtLeifAEhObJO_8"
+BOT_TOKEN = "8641605812:AAEW9Z2n7TB_uy18xR0V0mtaKc_rUKwy-es"
 CHAT_ID   = "-5322959874"
 
 # ---- Click Tracker ----
